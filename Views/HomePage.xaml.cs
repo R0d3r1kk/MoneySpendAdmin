@@ -3,6 +3,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using MoneySpendAdmin.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,11 +18,20 @@ namespace MoneySpendAdmin.Views
 {
     public sealed partial class HomePage : Page
     {
-      
+
         public HomePage()
         {
             this.InitializeComponent();
 
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var global = e.Parameter as Global;
+            if (global != null)
+            {
+            }
+            base.OnNavigatedTo(e);
         }
     }
 }

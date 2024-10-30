@@ -36,6 +36,7 @@ namespace MoneySpendAdmin.DAL
             await _dbConnection.CreateTableAsync<Balance>();
             await _dbConnection.CreateTableAsync<Movement>();
             await _dbConnection.CreateTableAsync<Operation>();
+            await _dbConnection.CreateTableAsync<TextExtraction>();
         }
 
         public SQLiteAsyncConnection GetAsyncConnection()

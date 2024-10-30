@@ -20,7 +20,6 @@ namespace MoneySpendAdmin
         public App()
         {
             this.InitializeComponent();
-
             dal = new DataAccess();
         }
 
@@ -32,7 +31,7 @@ namespace MoneySpendAdmin
         {
             await dal.Initialize();
 
-            m_window = new MainWindow();
+            m_window = new MainWindow(dal);
             m_window.Activate();
         }
 

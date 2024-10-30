@@ -1,0 +1,54 @@
+Página 11 de 15 
+Estado de Cuenta
+RODRIGO HERNANDEZ MORALES
+MiCuenta 
+AHORRO FACIL                            
+Periodo del 24 de septiembre al 23 de octubre del 2024
+GAT Nominal antes de impuestos 0.00%
+Número de Contrato 9573346376
+GAT Real antes de impuestos** -3.62%
+Interés Aplicable o Rendimientos $0.00
+Saldo anterior En pesos Moneda Nacional 1.54 Comisiones efectivamente cobradas No Aplica
+(+) Depósitos 1,000.00
+(-) Retiro/Otros cargos 1,000.00
+(+) Intereses menos Impuesto Sobre la Renta 0.00
+Saldo al corte 1.54
+Número de sucursal 395
+Cuenta de cheques para cargos y abonos 9573346354
+En el Período En el año
+Saldo promedio mensual 84.87
+Días período 30
+Tasa de interés Bruta 0.00 % 0.00 %
+Intereses 0.00
+ISR (0.5%)
+Impuesto Sobre la Renta retenido 0.00
+**La GAT Real es la que se obtendría después de descontar la inflación
+Intereses Menos ISR 0.00 0.00
+estimada
+* Expresada en términos anuales.
+Detalle de operaciones   En pesos Moneda Nacional
+FECHA CONCEPTO RETIROS DEPÓSITOS SALDO
+24 SEP SALDO ANTERIOR 1.54
+24 SEP INTERESES AL   0.00% 1.54
+25 SEP INTERESES AL   0.00% 1.54
+26 SEP INTERESES AL   0.00% 1.54
+27 SEP INTERESES AL   0.00% 1.54
+28 SEP INTERESES AL   0.00% 1.54
+29 SEP INTERESES AL   0.00% 1.54
+30 SEP INTERESES AL   0.00% 1.54
+01 OCT INTERESES AL   0.00% 1.54
+02 OCT INTERESES AL   0.00% 1.54
+03 OCT INTERESES AL   0.00% 1.54
+04 OCT INTERESES AL   0.00% 1.54
+05 OCT INTERESES AL   0.00% 1.54
+06 OCT INTERESES AL   0.00% 1.54
+07 OCT INTERESES AL   0.00% 1.54
+08 OCT INTERESES AL   0.00% 1.54
+09 OCT INTERESES AL   0.00% 1.54
+10 OCT INTERESES AL   0.00% 1.54
+11 OCT INTERESES AL   0.00% 1.54
+12 OCT INTERESES AL   0.00% 1.54
+13 OCT INTERESES AL   0.00% 1.54
+14 OCT INTERESES AL   0.00% 1.54
+15 OCT DEPOSITO   32353 1,000.00
+0006070 000190.B25INDA014.OD.1023.01

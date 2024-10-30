@@ -65,7 +65,8 @@
             PaneDisplayMode="Auto"
             IsBackButtonVisible="Collapsed"
             BackRequested="NavigationViewControl_BackRequested" 
-            ItemInvoked="NavigationViewControl_ItemInvoked">
+            ItemInvoked="NavigationViewControl_ItemInvoked"
+            >
             <NavigationView.HeaderTemplate>
                 <DataTemplate >
                     <Grid Margin="0,-30,0,0">

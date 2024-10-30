@@ -4,15 +4,19 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using pdftron.PDF;
+using MoneySpendAdmin.Shared;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using static pdftron.PDF.Tools.UtilityWinRT;
-
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
+using System.Text;
+using System.Collections.Generic;
+using MoneySpendAdmin.DAL;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -23,19 +27,20 @@ namespace MoneySpendAdmin
     /// </summary>
     public sealed partial class MainWindow : Window
     {
-        PDFViewCtrl mPdfView;
-
-        public MainWindow()
+        IDataAccess da;
+        public MainWindow(IDataAccess da)
         {
             this.InitializeComponent();
-
+            this.da = da;
             var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
             appWindowPresenter.IsResizable = false;
 
             NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems.OfType<NavigationViewItem>().First();
             ContentFrame.Navigate(
                        typeof(Views.HomePage),
-                       null,
+                       new Global()
+                       {
+                       },
                        new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
                        );
 
@@ -56,23 +61,6 @@ namespace MoneySpendAdmin
             return DateTime.Now.ToLongDateString().ToUpperInvariant();
         }
 
-        private void OpenFileOnViewer(PDFDoc doc)
-        {
-            if (mPdfView == null)
-            {
-                mPdfView = new PDFViewCtrl();
-                //pdfViewBorder.Child = mPdfView;
-
-                var toolManager = new pdftron.PDF.Tools.ToolManager(mPdfView);
-            }
-            else
-            {
-                mPdfView.CloseDoc();
-            }
-
-            mPdfView.SetDoc(doc);
-        }
-
         private async Task<StorageFile> OpenFileAsync()
         {
             FileOpenPicker filePicker = new FileOpenPicker();
@@ -83,7 +71,7 @@ namespace MoneySpendAdmin
             if (Window.Current == null)
             {
                 var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
-                IntPtr hwnd = GetActiveWindow();
+
                 WinRT.Interop.InitializeWithWindow.Initialize(filePicker, hWnd);
             }
 
@@ -121,7 +109,9 @@ namespace MoneySpendAdmin
                 Type newPage = Type.GetType(args.InvokedItemContainer.Tag.ToString());
                 ContentFrame.Navigate(
                        newPage,
-                       null,
+                       new Global()
+                       {
+                       },
                        args.RecommendedNavigationTransitionInfo
                        );
             }
@@ -158,11 +148,28 @@ namespace MoneySpendAdmin
             var file = await OpenFileAsync();
             if (file == null) return;
 
-            var doc = PDFDoc.CreateFromStorageFile(file);
-
-            OpenFileOnViewer(doc);
+            var randomAccessStream = await file.OpenReadAsync();
+            Stream stream = randomAccessStream.AsStreamForRead();
+            var pages = extractTextFromPDF(stream);
+            var model = new PDFModel(da,pages);
+            model.savePages(file.Path, file.Name);
+            model.formatPageLines();
         }
+        public List<string> extractTextFromPDF(Stream document)
+        {
+            var pdfReader = new PdfReader(document);
+            var textList = new List<string>();
+            for (int i = 0; i < pdfReader.NumberOfPages; i++)
+            {
+                var locationTextExtractionStrategy = new LocationTextExtractionStrategy();
 
+                string textFromPage = PdfTextExtractor.GetTextFromPage(pdfReader, i + 1, locationTextExtractionStrategy);
 
+                textList.Add(Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(textFromPage))));
+                //Do Something with the text
+            }
+
+            return textList;
+        }
     }
 }

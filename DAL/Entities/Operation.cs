@@ -1,11 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SQLite;
+using System;
 
 namespace MoneySpendAdmin.DAL.Entities
 {
     [Table("Operation")]
     public class Operation
     {
+        [PrimaryKey, Unique, AutoIncrement]
         public int id { get; set; }
         public DateTime fecha_creacion { get; set; }
         public string concepto { get; set; }

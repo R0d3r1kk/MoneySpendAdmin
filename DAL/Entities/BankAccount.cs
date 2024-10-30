@@ -1,11 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SQLite;
+using System;
 
 namespace MoneySpendAdmin.DAL.Entities
 {
     [Table("BankAccount")]
     public class BankAccount
     {
+        [PrimaryKey, Unique, AutoIncrement]
         public int id { get; set; }
         public string nombre { get; set; }
         public string direccion { get; set; }

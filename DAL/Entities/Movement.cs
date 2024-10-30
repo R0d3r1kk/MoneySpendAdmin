@@ -1,11 +1,12 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SQLite;
+using System;
 
 namespace MoneySpendAdmin.DAL.Entities
 {
     [Table("Movement")]
     public class Movement
     {
+        [PrimaryKey, Unique, AutoIncrement]
         public int id { get; set; }
         public DateTime fecha_creacion { get; set; }
         public DateTime fecha { get; set; }

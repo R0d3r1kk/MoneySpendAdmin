@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MoneySpendAdmin (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MoneySpendAdmin (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

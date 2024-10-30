@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MoneySpendAdmin.Views.CalendarPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MoneySpendAdmin.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Viewbox Name="gridContainer" 
+             StretchDirection="Both" 
+             Stretch="Uniform" 
+             HorizontalAlignment="Right"
+             Margin="50">
+        <muxc:ItemsRepeater Name="calendarGrid" 
+                       ItemsSource="{x:Bind Items}"
+                       ElementPrepared="calendarGrid_ElementPrepared"
+                       ElementIndexChanged="calendarGrid_ElementIndexChanged"
+                       ElementClearing="calendarGrid_ElementClearing">
+            <muxc:ItemsRepeater.ItemTemplate>
+                <DataTemplate x:Name="calendarGridItemTemplate" x:DataType="local:CalendarItem">
+
+                    <RelativePanel
+                        CornerRadius="10"
+                        Background="{x:Bind BgColor}"
+                        Padding="16"
+                        MaxHeight="280"
+                        MaxWidth="280"
+                        Tapped="RelativePanel_Tapped"
+                        GotFocus="RelativePanel_GotFocus"
+                        PointerEntered="RelativePanel_PointerEntered"
+                        PointerExited="RelativePanel_PointerExited"
+                        PointerPressed="RelativePanel_PointerPressed"
+                        
+                        >
+                    
+                        <TextBlock FontSize="40" 
+                                   RelativePanel.AlignTopWithPanel="True" 
+                                   Text="{x:Bind Day}" />
+                        <TextBlock RelativePanel.AlignBottomWithPanel="True"  
+                                   Text="{x:Bind Date}" />
+                    </RelativePanel>
+
+                </DataTemplate>
+            </muxc:ItemsRepeater.ItemTemplate>
+            <muxc:ItemsRepeater.Layout>
+                <muxc:UniformGridLayout Orientation="Horizontal"
+                                   MaximumRowsOrColumns="7"
+                                   MinItemHeight="280"
+                                   MinItemWidth="280"
+                                   MinColumnSpacing="5"
+                                   MinRowSpacing="5"/>
+            </muxc:ItemsRepeater.Layout>
+        </muxc:ItemsRepeater>
+    </Viewbox>
+</Page>

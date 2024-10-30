@@ -53,7 +53,7 @@ namespace MoneySpendAdmin
 
         public string GetTodayDate()
         {
-            return DateTime.UtcNow.ToLongDateString().ToUpperInvariant();
+            return DateTime.Now.ToLongDateString().ToUpperInvariant();
         }
 
         private void OpenFileOnViewer(PDFDoc doc)

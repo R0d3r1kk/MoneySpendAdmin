@@ -62,7 +62,7 @@ namespace MoneySpendAdmin.Views
         {
             this.InitializeComponent();
 
-            Items = GetDates(DateTime.UtcNow.Year, DateTime.UtcNow.Month);
+            Items = GetDates(DateTime.Now.Year, DateTime.Now.Month);
             calendarGrid.ItemsSource = Items;
         }
 

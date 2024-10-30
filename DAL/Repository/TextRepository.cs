@@ -27,7 +27,7 @@ namespace MoneySpendAdmin.DAL.Repository
 
         public async Task SaveAsync(TextExtraction txt)
         {
-            var ba = await _db.Table<TextExtraction>().FirstOrDefaultAsync(b => b.id == txt.id);
+            var ba = await _db.Table<TextExtraction>().FirstOrDefaultAsync(b => b.id == txt.id || (b.mes == txt.mes && b.año == txt.año));
             if (ba == null)
             {
                 await _db.InsertAsync(txt);

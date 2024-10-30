@@ -13,5 +13,7 @@ namespace MoneySpendAdmin.DAL.Entities
         public int line_count { get; set; }
         public string lines { get; set; }
         public DateTime fecha_creacion { get; set; }
+        public string mes { get; set; }
+        public int año { get; set; }
     }
 }

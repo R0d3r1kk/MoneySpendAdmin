@@ -103,12 +103,13 @@ namespace MoneySpendAdmin.Shared
                 //File.WriteAllText(path.Replace(".pdf", $"_Page-{pageIndex}.txt"), page);
                 await txtRepo.SaveAsync(new DAL.Entities.TextExtraction
                 {
-                    id = pageIndex,
                     fecha_creacion = DateTime.Now,
                     line_count = GetPageLines(page).Count,
                     lines = page,
                     path = path,
-                     filename = name
+                    filename = name,
+                    mes = DateTime.Parse(data.corte).ToString("MMMM"),
+                    año = DateTime.Parse(data.corte).Year
                 });
                 pageIndex++;
             }

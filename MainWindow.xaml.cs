@@ -28,6 +28,7 @@ namespace MoneySpendAdmin
     public sealed partial class MainWindow : Window
     {
         IDataAccess da;
+        PDFModel pdfModel;
         public MainWindow(IDataAccess da)
         {
             this.InitializeComponent();
@@ -49,6 +50,8 @@ namespace MoneySpendAdmin
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
+            loader.ShowPaused = true;
+            loader.Value = 30;
         }
 
         public string GetAppTitleFromSystem()
@@ -143,16 +146,29 @@ namespace MoneySpendAdmin
 
         private async void PickAFileButton_Click(object sender, RoutedEventArgs e)
         {
-
+            loading(true);
             // Open the picker for the user to pick a file
-            var file = await OpenFileAsync();
-            if (file == null) return;
-
-            var randomAccessStream = await file.OpenReadAsync();
-            Stream stream = randomAccessStream.AsStreamForRead();
-            var pages = extractTextFromPDF(stream);
-            var model = new PDFModel(da,pages);
-            await model.formatPageLines(file.Path, file.Name);
+            try
+            {
+                var file = await OpenFileAsync();
+                if (file == null)
+                {
+                    loading(false);
+                    throw new Exception("Archivo sin seleccionar");
+                    return;
+                }
+                var randomAccessStream = await file.OpenReadAsync();
+                Stream stream = randomAccessStream.AsStreamForRead();
+                var pages = extractTextFromPDF(stream);
+                this.pdfModel = new PDFModel(da, pages);
+                await pdfModel.formatPageLines(file.Path, file.Name);
+                loader.IsIndeterminate = false;
+                loading(false);
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                loading(false, true);
+            }
         }
         public List<string> extractTextFromPDF(Stream document)
         {
@@ -169,6 +185,41 @@ namespace MoneySpendAdmin
             }
 
             return textList;
+        }
+
+        private void loading(bool status, bool error = false)
+        {
+            loader.IsIndeterminate = status;
+            if (loader.IsIndeterminate)
+            {
+                if (error)
+                {
+                    loader.ShowPaused = false;
+                    loader.ShowError = true;
+                    loader.Value = 30;
+                }
+                else
+                {
+                    loader.ShowPaused = false;
+                    loader.ShowError = false;
+                    loader.Value = 0;
+                }
+            }
+            else
+            {
+                if (error)
+                {
+                    loader.ShowPaused = false;
+                    loader.ShowError = true;
+                }
+                else
+                {
+                    loader.ShowPaused = true;
+                    loader.ShowError = false;
+                }
+
+                loader.Value = 30;
+            }
         }
     }
 }

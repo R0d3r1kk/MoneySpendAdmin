@@ -23,9 +23,10 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Image
+                Grid.Column="0"
                 x:Name="AppFontIcon"
                 Width="16"
                 Height="16"
@@ -38,24 +39,28 @@
                 VerticalAlignment="Center"
                 Style="{StaticResource CaptionTextBlockStyle}"
                 Text="{x:Bind GetAppTitleFromSystem()}"/>
+            <CommandBar 
+                Background="Transparent" 
+                 IsOpen="False" 
+                 DefaultLabelPosition="Bottom"
+                 HorizontalAlignment="Left"
+                Grid.Column="2">
+                <CommandBar.SecondaryCommands >
+                    <AppBarButton Icon="OpenFile" Label="Open..." Click="PickAFileButton_Click" ClickMode="Press">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Modifiers="Control" Key="O" />
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+                </CommandBar.SecondaryCommands>
+                <CommandBar.Content>
+                    <TextBlock Text="{x:Bind GetTodayDate()}" Margin="20,14"/>
+                </CommandBar.Content>
+            </CommandBar>
         </Grid>
 
-        <CommandBar Background="Transparent" 
-                    IsOpen="False" 
-                    DefaultLabelPosition="Right" 
-                    HorizontalAlignment="Center">
-            <CommandBar.SecondaryCommands >
-                <AppBarButton Icon="OpenFile" Label="Open..." Click="PickAFileButton_Click" ClickMode="Press">
-                    <AppBarButton.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="O" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
-            </CommandBar.SecondaryCommands>
-            <CommandBar.Content>
-                <TextBlock Text="{x:Bind GetTodayDate()}" Margin="20,14"/>
-            </CommandBar.Content>
-        </CommandBar>
-        
+
+
+
         <NavigationView
             x:Name="NavigationViewControl"
             IsTitleBarAutoPaddingEnabled="False"
@@ -69,10 +74,9 @@
             >
             <NavigationView.HeaderTemplate>
                 <DataTemplate >
-                    <Grid Margin="0,-30,0,0">
+                    <Grid Margin="0,-30,30,0">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid x:Name="pageTitle"
                             Background="Transparent"
@@ -99,12 +103,26 @@
                 </NavigationViewItem-->
             </NavigationView.MenuItems>
             <NavigationView.Content>
-                <Frame x:Name="ContentFrame" 
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Frame 
+                        Grid.Column="0"
+                        x:Name="ContentFrame" 
                        Navigated="ContentFrame_Navigated"  
-                       Padding="10,0,10,10" 
-                       CornerRadius="30">
+                       Padding="10,0,30,10" 
+                       CornerRadius="10">
 
-                </Frame>
+                    </Frame>
+                    <ProgressBar
+                        x:Name="loader"
+                        Grid.Column="1" 
+                        VerticalAlignment="Bottom" 
+                        Background="Transparent"
+                        Margin="20,0,20,0" />
+                </Grid>
             </NavigationView.Content>
         </NavigationView>
     </Grid>

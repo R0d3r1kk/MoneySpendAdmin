@@ -8,6 +8,7 @@ namespace MoneySpendAdmin.DAL.Entities
     {
         [PrimaryKey, Unique]
         public string id { get; set; }
+        public string mes { get; set; }
         public decimal saldo_anterior { get; set; }
         public decimal depositos { get; set; }
         public decimal retiros { get; set; }

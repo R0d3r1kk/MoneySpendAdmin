@@ -28,7 +28,7 @@ namespace MoneySpendAdmin.DAL.Repository
 
         public async Task SaveAsync(Balance balance)
         {
-            var ba = await _db.Table<Balance>().FirstOrDefaultAsync(b => b.id == balance.id);
+            var ba = await _db.Table<Balance>().FirstOrDefaultAsync(b => b.id == balance.id || b.mes == balance.mes);
             if (ba == null)
             {
                 balance.id = Guid.NewGuid().ToString();
@@ -38,6 +38,7 @@ namespace MoneySpendAdmin.DAL.Repository
             else
             {
                 balance.id = ba.id;
+                balance.fecha_creacion = DateTime.Now;
                 await _db.UpdateAsync(balance);
             }
         }

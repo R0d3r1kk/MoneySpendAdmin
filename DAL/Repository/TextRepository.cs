@@ -38,6 +38,7 @@ namespace MoneySpendAdmin.DAL.Repository
             else
             {
                 txt.id = ba.id;
+                txt.fecha_creacion = DateTime.Now;
                 await _db.UpdateAsync(txt);
             }
         }

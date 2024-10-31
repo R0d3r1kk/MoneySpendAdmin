@@ -132,6 +132,17 @@ namespace MoneySpendAdmin.Shared
                             tarjeta_debito = data.tarjeta_debito,
                             tarjeta_credito = data.tarjeta_credito,
                         });
+
+                        await balRepo.SaveAsync(new DAL.Entities.Balance()
+                        {
+                            mes = DateTime.Parse(data.corte.Replace("de", "/")).ToString("MMMM"),
+                            depositos = Decimal.Parse(data.depositos),
+                            otros_cargos = Decimal.Parse(data.otros_cargos),
+                            retiros = Decimal.Parse(data.retiros),
+                            saldo_anterior = Decimal.Parse(data.saldo_anterior),
+                            saldo_corte = Decimal.Parse(data.saldo_corte),
+                            saldo_promedio = Decimal.Parse(data.sald_promedio),
+                        });
                         break;
                     case 2:
                     case 3:

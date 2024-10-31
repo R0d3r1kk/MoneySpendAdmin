@@ -38,6 +38,7 @@ namespace MoneySpendAdmin.DAL.Repository
             else
             {
                 bankAccount.id = ba.id;
+                bankAccount.fecha_creacion = DateTime.Now;
                 await _db.UpdateAsync(bankAccount);
             }
         }

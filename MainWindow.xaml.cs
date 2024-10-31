@@ -152,8 +152,7 @@ namespace MoneySpendAdmin
             Stream stream = randomAccessStream.AsStreamForRead();
             var pages = extractTextFromPDF(stream);
             var model = new PDFModel(da,pages);
-            model.formatPageLines();
-            model.savePages(file.Path, file.Name);
+            await model.formatPageLines(file.Path, file.Name);
         }
         public List<string> extractTextFromPDF(Stream document)
         {

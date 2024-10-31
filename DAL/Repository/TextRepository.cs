@@ -1,5 +1,6 @@
 ﻿using MoneySpendAdmin.DAL.Entities;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,13 +28,16 @@ namespace MoneySpendAdmin.DAL.Repository
 
         public async Task SaveAsync(TextExtraction txt)
         {
-            var ba = await _db.Table<TextExtraction>().FirstOrDefaultAsync(b => b.id == txt.id || (b.mes == txt.mes && b.año == txt.año));
+            var ba = await _db.Table<TextExtraction>().FirstOrDefaultAsync(b => b.id == txt.id || b.lines == txt.lines);
             if (ba == null)
             {
+                txt.id = Guid.NewGuid().ToString();
+                txt.fecha_creacion = DateTime.Now;
                 await _db.InsertAsync(txt);
             }
             else
             {
+                txt.id = ba.id;
                 await _db.UpdateAsync(txt);
             }
         }

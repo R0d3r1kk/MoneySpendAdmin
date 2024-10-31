@@ -1,5 +1,6 @@
 ﻿using MoneySpendAdmin.DAL.Entities;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -30,10 +31,13 @@ namespace MoneySpendAdmin.DAL.Repository
             var ba = await _db.Table<Operation>().FirstOrDefaultAsync(b => b.id == op.id);
             if (ba == null)
             {
+                op.id = Guid.NewGuid().ToString();
+                op.fecha_creacion = DateTime.Now;
                 await _db.InsertAsync(op);
             }
             else
             {
+                op.id = ba.id;
                 await _db.UpdateAsync(op);
             }
         }

@@ -1,5 +1,6 @@
 ﻿using MoneySpendAdmin.DAL.Entities;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -27,13 +28,16 @@ namespace MoneySpendAdmin.DAL.Repository
 
         public async Task SaveAsync(BankAccount bankAccount)
         {
-            var ba = await _db.Table<BankAccount>().FirstOrDefaultAsync(b => b.id == bankAccount.id);
+            var ba = await _db.Table<BankAccount>().FirstOrDefaultAsync(b => b.id == bankAccount.id || b.tarjeta_debito == bankAccount.tarjeta_debito || b.tarjeta_credito == bankAccount.tarjeta_credito);
             if (ba == null)
             {
+                bankAccount.id = Guid.NewGuid().ToString();
+                bankAccount.fecha_creacion = DateTime.Now;
                 await _db.InsertAsync(bankAccount);
             }
             else
             {
+                bankAccount.id = ba.id;
                 await _db.UpdateAsync(bankAccount);
             }
         }

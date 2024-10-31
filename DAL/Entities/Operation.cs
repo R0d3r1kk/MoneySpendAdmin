@@ -6,8 +6,8 @@ namespace MoneySpendAdmin.DAL.Entities
     [Table("Operation")]
     public class Operation
     {
-        [PrimaryKey, Unique, AutoIncrement]
-        public int id { get; set; }
+        [PrimaryKey, Unique]
+        public string id { get; set; }
         public DateTime fecha_creacion { get; set; }
         public string concepto { get; set; }
         public string tipo { get; set; }

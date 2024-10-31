@@ -6,8 +6,8 @@ namespace MoneySpendAdmin.DAL.Entities
     [Table("TextExtraction")]
     public class TextExtraction
     {
-        [PrimaryKey, Unique, AutoIncrement]
-        public int id { get; set; }
+        [PrimaryKey, Unique]
+        public string id { get; set; }
         public string path { get; set; }
         public string filename { get; set; }
         public int line_count { get; set; }

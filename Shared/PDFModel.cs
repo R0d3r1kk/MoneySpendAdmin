@@ -73,6 +73,7 @@ namespace MoneySpendAdmin.Shared
         public async Task formatPageLines(string path, string name)
         {
             int pageIndex = 1;
+            string year = string.Empty;
             foreach (var page in pages)
             {
                 var lines = GetPageLines(page);
@@ -108,6 +109,7 @@ namespace MoneySpendAdmin.Shared
                         var fs = ps[1].Split("del");
                         var dia_mesT_final = fs[0].Split("de");
                         var año = fs[1];
+                        year = año;
 
                         var per_inicial = $"{dia_mesT_inicial[0]}/{dia_mesT_inicial[1]}/{año}";
                         var per_final = $"{dia_mesT_final[0]}/{dia_mesT_final[1]}/{año}";
@@ -141,7 +143,7 @@ namespace MoneySpendAdmin.Shared
                     case 9:
                         var trans = findPageTransactions(lines, pageIndex);
                         this.transactions.AddRange(trans);
-                        await saveTransactions(path, name);
+                        await saveTransactions(path, name, year);
                         break;
                 }
                 pageIndex++;
@@ -243,7 +245,7 @@ namespace MoneySpendAdmin.Shared
             }
         }
 
-        private async Task saveTransactions(string path, string name)
+        private async Task saveTransactions(string path, string name, string year)
         {
             int pageIndex = 1;
             foreach (var tr in transactions)
@@ -255,7 +257,7 @@ namespace MoneySpendAdmin.Shared
                 {
                     concepto = tr.concepto,
                     deposito = stringToDecimal(tr.depositos),
-                    fecha = tr.fecha,
+                    fecha = $"{tr.fecha}{year}",
                     retiro = stringToDecimal(tr.retiros),
                     saldo = stringToDecimal(tr.saldo),
                     retiro_deposito = stringToDecimal(tr.retirosOdepositos)

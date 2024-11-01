@@ -125,7 +125,11 @@
                        Navigated="ContentFrame_Navigated"  
                        Padding="10,0,30,10" 
                        CornerRadius="10">
-
+                        <Frame.ContentTransitions>
+                            <TransitionCollection>
+                                <NavigationThemeTransition/>
+                            </TransitionCollection>
+                        </Frame.ContentTransitions>
                     </Frame>
                     <ProgressBar
                         x:Name="loader"

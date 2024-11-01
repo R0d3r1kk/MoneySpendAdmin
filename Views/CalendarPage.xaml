@@ -54,12 +54,9 @@
                             <InfoBadge 
                                     Background="#C42B1C" 
                                     RelativePanel.AlignRightWithPanel="True"
+                                    Margin="0,0,10,0"
                                     Foreground="White"
                                     FontWeight="Bold"
-                                    MinWidth="40"
-                                    MinHeight="40"
-                                    IsTextScaleFactorEnabled="True"
-                                    FontStretch="Expanded"
                                     Value="{x:Bind movements.Count}"/>
 
                             <TextBlock FontSize="40" 

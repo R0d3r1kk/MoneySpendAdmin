@@ -45,10 +45,6 @@ namespace MoneySpendAdmin.Views
 
     public sealed partial class CalendarPage : Page
     {
-
-        private readonly Compositor compositor = CompositionTarget.GetCompositorForCurrentThread();
-        private SpringVector3NaturalMotionAnimation springAnimation;
-
         ObservableCollection<CalendarItem> Items { get; set; }
         CalendarItem SelectionModel { get; set; }
 
@@ -132,17 +128,6 @@ namespace MoneySpendAdmin.Views
             byte G = Convert.ToByte(hex.Substring(5, 2), 16);
             byte B = Convert.ToByte(hex.Substring(7, 2), 16);
             return new SolidColorBrush(Color.FromArgb(A, R, G, B));
-        }
-
-        private void CreateOrUpdateSpringAnimation(float finalValue)
-        {
-            if (springAnimation == null)
-            {
-                springAnimation = compositor.CreateSpringVector3Animation();
-                springAnimation.Target = "Scale";
-            }
-
-            springAnimation.FinalValue = new Vector3(finalValue);
         }
 
         #region Calendar

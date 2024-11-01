@@ -12,12 +12,17 @@ namespace MoneySpendAdmin.DAL
         public string dbName = "moneySpendAdmin.db";
         private SQLiteAsyncConnection _dbConnection;
         private bool dbExist;
+        private bool connected = false;
 
         public DataAccess()
         {
             string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path,
            dbName);
            dbExist = File.Exists(dbpath);
+            if (!connected)
+            {
+                Task.Run(() => Initialize());
+            }
         }
 
         public async Task Initialize()
@@ -31,6 +36,8 @@ namespace MoneySpendAdmin.DAL
             }
             else
                 _dbConnection = new SQLiteAsyncConnection(dbpath);
+
+            connected = _dbConnection != null;
 
             await _dbConnection.CreateTableAsync<BankAccount>();
             await _dbConnection.CreateTableAsync<Balance>();

@@ -41,6 +41,7 @@ namespace MoneySpendAdmin
                        typeof(Views.HomePage),
                        new Global()
                        {
+                           dataAccess = da
                        },
                        new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
                        );
@@ -100,6 +101,7 @@ namespace MoneySpendAdmin
             return file;
         }
 
+        #region Navigation
         private void NavigationViewControl_ItemInvoked(NavigationView sender,
                       NavigationViewItemInvokedEventArgs args)
         {
@@ -114,6 +116,7 @@ namespace MoneySpendAdmin
                        newPage,
                        new Global()
                        {
+                           dataAccess = da
                        },
                        args.RecommendedNavigationTransitionInfo
                        );
@@ -144,6 +147,8 @@ namespace MoneySpendAdmin
             NavigationViewControl.Header = ((NavigationViewItem)NavigationViewControl.SelectedItem)?.Content?.ToString();
         }
 
+        #endregion
+
         private async void PickAFileButton_Click(object sender, RoutedEventArgs e)
         {
             loading(true);
@@ -170,8 +175,10 @@ namespace MoneySpendAdmin
                 loading(false, true);
             }
         }
+
         public List<string> extractTextFromPDF(Stream document)
         {
+            NotifyUser("Extrayendo texto de archivo", InfoBarSeverity.Informational);
             var pdfReader = new PdfReader(document);
             var textList = new List<string>();
             for (int i = 0; i < pdfReader.NumberOfPages; i++)
@@ -183,7 +190,7 @@ namespace MoneySpendAdmin
                 textList.Add(Encoding.UTF8.GetString(Encoding.Convert(Encoding.Default, Encoding.UTF8, Encoding.Default.GetBytes(textFromPage))));
                 //Do Something with the text
             }
-
+            NotifyUser("Texto extraido", InfoBarSeverity.Success);
             return textList;
         }
 
@@ -220,6 +227,30 @@ namespace MoneySpendAdmin
 
                 loader.Value = 30;
             }
+        }
+
+        public void NotifyUser(string strMessage, InfoBarSeverity severity, bool isOpen = true)
+        {
+            // If called from the UI thread, then update immediately.
+            // Otherwise, schedule a task on the UI thread to perform the update.
+            if (DispatcherQueue.HasThreadAccess)
+            {
+                UpdateStatus(strMessage, severity, isOpen);
+            }
+            else
+            {
+                DispatcherQueue.TryEnqueue(() =>
+                {
+                    UpdateStatus(strMessage, severity, isOpen);
+                });
+            }
+        }
+
+        private void UpdateStatus(string strMessage, InfoBarSeverity severity, bool isOpen)
+        {
+            infoBar.Message = strMessage;
+            infoBar.IsOpen = isOpen;
+            infoBar.Severity = severity;
         }
     }
 }

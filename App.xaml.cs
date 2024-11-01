@@ -12,7 +12,6 @@ namespace MoneySpendAdmin
     /// </summary>
     public partial class App : Application
     {
-        public DataAccess dal;
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -20,8 +19,9 @@ namespace MoneySpendAdmin
         public App()
         {
             this.InitializeComponent();
-            dal = new DataAccess();
         }
+
+        public static MainWindow MAIN { get; } = new MainWindow(new DataAccess());
 
         /// <summary>
         /// Invoked when the application is launched.
@@ -29,12 +29,9 @@ namespace MoneySpendAdmin
         /// <param name="args">Details about the launch request and process.</param>
         protected override async void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
-            await dal.Initialize();
-
-            m_window = new MainWindow(dal);
-            m_window.Activate();
+            MAIN.Activate();
         }
 
-        private Window m_window;
+        public Window m_window;
     }
 }

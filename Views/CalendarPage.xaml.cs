@@ -1,12 +1,19 @@
 using Microsoft.UI;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
+using MoneySpendAdmin.DAL;
+using MoneySpendAdmin.DAL.Entities;
+using MoneySpendAdmin.DAL.Repository;
+using MoneySpendAdmin.Shared;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Numerics;
 using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -19,19 +26,35 @@ namespace MoneySpendAdmin.Views
         public int Day { get; private set; }
         public string Date { get; private set; }
         public string BgColor { get; private set; }
+        public string badgeColor { get; private set; }
+        public ObservableCollection<Movement> movements { get; set; }
 
         public CalendarItem(int day, string date, string bgColor)
         {
             this.Day = day;
             this.Date = date;
             BgColor = bgColor;
+            movements = new ObservableCollection<Movement>();
+        }
+
+        public void setMovements(List<Movement> moves)
+        {
+            this.movements = new ObservableCollection<Movement>(moves);
         }
     }
 
     public sealed partial class CalendarPage : Page
     {
-        ObservableCollection<CalendarItem> Items { get; }
+
+        private readonly Compositor compositor = CompositionTarget.GetCompositorForCurrentThread();
+        private SpringVector3NaturalMotionAnimation springAnimation;
+
+        ObservableCollection<CalendarItem> Items { get; set; }
         CalendarItem SelectionModel { get; set; }
+
+        private MovementRepository moveRepo;
+
+        ObservableCollection<Movement> moves;
 
         List<string> unhoverColors = new List<string>()
         {
@@ -64,6 +87,20 @@ namespace MoneySpendAdmin.Views
 
             Items = GetDates(DateTime.Now.Year, DateTime.Now.Month);
             calendarGrid.ItemsSource = Items;
+            calendarDP.Date = DateTime.Now;
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var global = e.Parameter as Global;
+            if (global != null)
+            {
+                this.moveRepo = new MovementRepository(global.dataAccess);
+                moves = new ObservableCollection<Movement>(await this.moveRepo.GetAllAsync());
+                prepareDates();
+                App.MAIN.NotifyUser($"{moves.Count} Transacciones", InfoBarSeverity.Informational);
+            }
+            base.OnNavigatedTo(e);
         }
 
         public ObservableCollection<CalendarItem> GetDates(int year, int month)
@@ -76,6 +113,18 @@ namespace MoneySpendAdmin.Views
                              .ToList()); // Load dates into a list
         }
 
+        public void prepareDates()
+        {
+            foreach(var m in moves)
+            {
+                var item = Items.FirstOrDefault(i => DateTime.Parse(i.Date) == DateTime.Parse(m.fecha));
+                if(item != null)
+                {
+                    item.movements.Add(m);
+                }
+            }
+        }
+
         public SolidColorBrush getBrushFromHex(string hex)
         {
             byte A = Convert.ToByte(hex.Substring(1, 2), 16);
@@ -85,6 +134,18 @@ namespace MoneySpendAdmin.Views
             return new SolidColorBrush(Color.FromArgb(A, R, G, B));
         }
 
+        private void CreateOrUpdateSpringAnimation(float finalValue)
+        {
+            if (springAnimation == null)
+            {
+                springAnimation = compositor.CreateSpringVector3Animation();
+                springAnimation.Target = "Scale";
+            }
+
+            springAnimation.FinalValue = new Vector3(finalValue);
+        }
+
+        #region Calendar
         private void calendarGrid_ElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args)
         {
             var selectionIndex = args.Index;
@@ -111,6 +172,10 @@ namespace MoneySpendAdmin.Views
 
             if (colorIdx > -1)
                 target.Background = getBrushFromHex(hoverColors[colorIdx]);
+
+            //CreateOrUpdateSpringAnimation(1.1f);
+            //target.CenterPoint = new Vector3((float)((sender as Button).ActualWidth / 2.0), (float)((sender as Button).ActualHeight / 2.0), 1f);
+            //((UIElement)sender).StartAnimation(springAnimation);
         }
 
         private void RelativePanel_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -122,6 +187,10 @@ namespace MoneySpendAdmin.Views
 
             if (colorIdx > -1)
                 target.Background = getBrushFromHex(unhoverColors[colorIdx]);
+
+            //CreateOrUpdateSpringAnimation(1.0f);
+            //target.CenterPoint = new Vector3((float)((sender as Button).ActualWidth / 2.0), (float)((sender as Button).ActualHeight / 2.0), 1f);
+            //((UIElement)sender).StartAnimation(springAnimation);
         }
 
         private void RelativePanel_PointerPressed(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
@@ -151,6 +220,17 @@ namespace MoneySpendAdmin.Views
                 AnimationDesired = true,
             });
 
+        }
+        #endregion
+
+        private void calendarDP_SelectedDateChanged(DatePicker sender, DatePickerSelectedValueChangedEventArgs args)
+        {
+            if(calendarDP.SelectedDate != null)
+            {
+                Items = GetDates(args.NewDate.Value.Year, args.NewDate.Value.Month);
+                calendarGrid.ItemsSource = Items;
+                prepareDates();
+            }
         }
     }
 }

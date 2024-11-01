@@ -13,47 +13,74 @@
     <Viewbox Name="gridContainer" 
              StretchDirection="Both" 
              Stretch="Uniform" 
-             HorizontalAlignment="Right"
+             HorizontalAlignment="Center"
              Margin="50">
-        <muxc:ItemsRepeater Name="calendarGrid" 
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <DatePicker 
+                x:Name="calendarDP" 
+                Grid.Row="0" 
+                DayVisible="False"
+                YearVisible="True" 
+                SelectedDateChanged="calendarDP_SelectedDateChanged"/>
+
+            <muxc:ItemsRepeater 
+                        Grid.Row="1"
+                        Name="calendarGrid" 
                        ItemsSource="{x:Bind Items}"
                        ElementPrepared="calendarGrid_ElementPrepared"
                        ElementIndexChanged="calendarGrid_ElementIndexChanged"
                        ElementClearing="calendarGrid_ElementClearing">
-            <muxc:ItemsRepeater.ItemTemplate>
-                <DataTemplate x:Name="calendarGridItemTemplate" x:DataType="local:CalendarItem">
+                <muxc:ItemsRepeater.ItemTemplate>
+                    <DataTemplate x:Name="calendarGridItemTemplate" x:DataType="local:CalendarItem">
 
-                    <RelativePanel
-                        CornerRadius="10"
-                        Background="{x:Bind BgColor}"
-                        Padding="16"
-                        MaxHeight="280"
-                        MaxWidth="280"
-                        Tapped="RelativePanel_Tapped"
-                        GotFocus="RelativePanel_GotFocus"
-                        PointerEntered="RelativePanel_PointerEntered"
-                        PointerExited="RelativePanel_PointerExited"
-                        PointerPressed="RelativePanel_PointerPressed"
+                        <RelativePanel
+                            CornerRadius="10"
+                            Background="{x:Bind BgColor}"
+                            Padding="16"
+                            MaxHeight="280"
+                            MaxWidth="280"
+                            Tapped="RelativePanel_Tapped"
+                            GotFocus="RelativePanel_GotFocus"
+                            PointerEntered="RelativePanel_PointerEntered"
+                            PointerExited="RelativePanel_PointerExited"
+                            PointerPressed="RelativePanel_PointerPressed"
                         
-                        >
-                    
-                        <TextBlock FontSize="40" 
-                                   RelativePanel.AlignTopWithPanel="True" 
-                                   Text="{x:Bind Day}" />
-                        <TextBlock RelativePanel.AlignBottomWithPanel="True"  
-                                   Text="{x:Bind Date}" />
-                    </RelativePanel>
+                            >
+                            <InfoBadge 
+                                    Background="#C42B1C" 
+                                    RelativePanel.AlignRightWithPanel="True"
+                                    Foreground="White"
+                                    FontWeight="Bold"
+                                    MinWidth="40"
+                                    MinHeight="40"
+                                    IsTextScaleFactorEnabled="True"
+                                    FontStretch="Expanded"
+                                    Value="{x:Bind movements.Count}"/>
 
-                </DataTemplate>
-            </muxc:ItemsRepeater.ItemTemplate>
-            <muxc:ItemsRepeater.Layout>
-                <muxc:UniformGridLayout Orientation="Horizontal"
+                            <TextBlock FontSize="40" 
+                                       RelativePanel.AlignTopWithPanel="True" 
+                                       Text="{x:Bind Day}" />
+                            <TextBlock RelativePanel.AlignBottomWithPanel="True"  
+                                       Text="{x:Bind Date}" />
+                        </RelativePanel>
+
+                    </DataTemplate>
+                </muxc:ItemsRepeater.ItemTemplate>
+                <muxc:ItemsRepeater.Layout>
+                    <muxc:UniformGridLayout Orientation="Horizontal"
                                    MaximumRowsOrColumns="7"
                                    MinItemHeight="280"
                                    MinItemWidth="280"
                                    MinColumnSpacing="5"
                                    MinRowSpacing="5"/>
-            </muxc:ItemsRepeater.Layout>
-        </muxc:ItemsRepeater>
+                </muxc:ItemsRepeater.Layout>
+            </muxc:ItemsRepeater>
+        </Grid>
+
     </Viewbox>
 </Page>

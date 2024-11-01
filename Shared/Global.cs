@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MoneySpendAdmin.DAL;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace MoneySpendAdmin.Shared
 {
     public class Global
     {
+        public IDataAccess dataAccess {  get; set; }
     }
 }

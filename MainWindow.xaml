@@ -9,12 +9,17 @@
     mc:Ignorable="d">
 
     <Window.SystemBackdrop>
-        <MicaBackdrop Kind="Base"/>
+        <DesktopAcrylicBackdrop />
     </Window.SystemBackdrop>
 
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
         <Grid
+            Grid.Row="0"
             x:Name="AppTitleBar"
             Height="48"
             Margin="48,0,0,0"
@@ -59,9 +64,15 @@
         </Grid>
 
 
-
-
+        <InfoBar 
+            x:Name="infoBar" 
+            Grid.Row="1"
+            IsIconVisible="True"
+            IsClosable="True">
+        </InfoBar>
+        
         <NavigationView
+            Grid.Row="2"
             x:Name="NavigationViewControl"
             IsTitleBarAutoPaddingEnabled="False"
             AlwaysShowHeader="True"
@@ -102,7 +113,7 @@
                     </NavigationViewItem.MenuItems>
                 </NavigationViewItem-->
             </NavigationView.MenuItems>
-            <NavigationView.Content>
+            <NavigationView.Content >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>

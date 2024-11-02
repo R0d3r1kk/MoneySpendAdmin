@@ -82,6 +82,7 @@
             IsBackButtonVisible="Collapsed"
             BackRequested="NavigationViewControl_BackRequested" 
             ItemInvoked="NavigationViewControl_ItemInvoked"
+            IsSettingsVisible="False"
             >
             <NavigationView.HeaderTemplate>
                 <DataTemplate >
@@ -105,14 +106,10 @@
             <NavigationView.MenuItems>
                 <NavigationViewItem Icon="Home" Content="Home" Tag="MoneySpendAdmin.Views.HomePage" />
                 <NavigationViewItem Icon="Calendar" Content="Calendar" Tag="MoneySpendAdmin.Views.CalendarPage" />
-                <!--" NavigationViewItem Icon="Home" Content="Config" SelectsOnInvoked="False">
-                    <NavigationViewItem.MenuItems>
-                        <NavigationViewItem Icon="Save" Content="Menu Item2" Tag="SamplePage2" />
-                        <NavigationViewItem Icon="Refresh" Content="Menu Item3" Tag="SamplePage3" />
-                        <NavigationViewItem Icon="Download" Content="Menu Item4" Tag="SamplePage4" />
-                    </NavigationViewItem.MenuItems>
-                </NavigationViewItem-->
             </NavigationView.MenuItems>
+            <NavigationView.FooterMenuItems>
+                <NavigationViewItem Icon="Setting" Content="Settings" Tag="MoneySpendAdmin.Views.SettingsPage" />
+            </NavigationView.FooterMenuItems>
             <NavigationView.Content >
                 <Grid>
                     <Grid.RowDefinitions>
@@ -120,7 +117,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <Frame 
-                        Grid.Column="0"
+                        Grid.Row="0"
                         x:Name="ContentFrame" 
                        Navigated="ContentFrame_Navigated"  
                        Padding="10,0,30,10" 
@@ -133,7 +130,7 @@
                     </Frame>
                     <ProgressBar
                         x:Name="loader"
-                        Grid.Column="1" 
+                        Grid.Row="1" 
                         VerticalAlignment="Bottom" 
                         Background="Transparent"
                         Margin="20,0,20,0" />

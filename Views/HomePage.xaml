@@ -7,8 +7,24 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
+        <StackPanel
+                Grid.Row="0" 
+                Margin="20" 
+                HorizontalAlignment="Center">
+            <TextBlock Margin="0,0,0,20">Saldo</TextBlock>
+            <controls:DataGrid 
+                x:Name="dgBalance" 
+                AutoGenerateColumns="True" 
+                ItemsSource="{x:Bind balanceList}"/>
+        </StackPanel>
+    </Grid>
 </Page>

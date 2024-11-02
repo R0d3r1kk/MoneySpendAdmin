@@ -2,6 +2,7 @@ using Microsoft.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -46,9 +48,10 @@ namespace MoneySpendAdmin.Views
     public sealed partial class CalendarPage : Page
     {
         ObservableCollection<CalendarItem> Items { get; set; }
+
         CalendarItem SelectionModel { get; set; }
 
-        private MovementRepository moveRepo;
+        private MovementRepository moveRepo { get; set; }
 
         ObservableCollection<Movement> moves;
 
@@ -81,9 +84,7 @@ namespace MoneySpendAdmin.Views
         {
             this.InitializeComponent();
 
-            Items = GetDates(DateTime.Now.Year, DateTime.Now.Month);
-            calendarGrid.ItemsSource = Items;
-            calendarDP.Date = DateTime.Now;
+            init();
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -91,34 +92,74 @@ namespace MoneySpendAdmin.Views
             var global = e.Parameter as Global;
             if (global != null)
             {
+                App.MAIN.loading(true);
                 this.moveRepo = new MovementRepository(global.dataAccess);
-                moves = new ObservableCollection<Movement>(await this.moveRepo.GetAllAsync());
-                prepareDates();
+                await prepareDates();
+                App.MAIN.loading(false);
                 App.MAIN.NotifyUser($"{moves.Count} Transacciones", InfoBarSeverity.Informational);
             }
+            init();
+            
             base.OnNavigatedTo(e);
         }
 
-        public ObservableCollection<CalendarItem> GetDates(int year, int month)
+        public void init()
+        {
+            calendarDP.SelectedDate = DateTime.Now;
+            calendarTypeSelector.SelectedItem = calendarTypeSelector.Items.FirstOrDefault();
+            Items = GetDates(calendarDP.SelectedDate.Value.Year, calendarDP.SelectedDate.Value.Month, calendarTypeSelector.SelectedItem.Text);
+            calendarGrid.ItemsSource = Items;
+            CmbWeek.Visibility = Visibility.Collapsed;
+        }
+
+        public ObservableCollection<CalendarItem> GetDates(int year, int month, string type, int multi = 1)
         {
             var random = new Random();
             var idx = random.Next(0, hoverColors.Count - 1);
+            var days = 0; 
+            switch (type)
+            {
+                case "Mes":
+                    days = DateTime.DaysInMonth(year, month);
+                    CmbWeek.Visibility = Visibility.Collapsed;
+                    break;
+                case "Semana":
+                    days = 7 * multi;
+                    CmbWeek.Visibility = Visibility.Visible;
+                    break;
+            }
 
-            return new ObservableCollection<CalendarItem>(Enumerable.Range(1, DateTime.DaysInMonth(year, month))  // Days: 1, 2 ... 31 etc.
+            return new ObservableCollection<CalendarItem>(Enumerable.Range(1, days)  // Days: 1, 2 ... 31 etc.
                              .Select(day => new CalendarItem(day, new DateTime(year, month, day).ToLongDateString().ToUpperInvariant(), unhoverColors[idx])) // Map each day to a date
                              .ToList()); // Load dates into a list
         }
 
-        public void prepareDates()
+
+        public async Task prepareDates()
         {
-            foreach(var m in moves)
+            moves = new ObservableCollection<Movement>(await this.moveRepo.GetAllAsync());
+            foreach (var m in moves)
             {
-                var item = Items.FirstOrDefault(i => DateTime.Parse(i.Date) == DateTime.Parse(m.fecha));
-                if(item != null)
+                var item = Items.FirstOrDefault(i => DateTime.Parse(i.Date) == formatDate(m.fecha));
+                if (item != null)
                 {
                     item.movements.Add(m);
                 }
             }
+        }
+
+        public DateTime formatDate(string fecha)
+        {
+            var split = fecha.Split(' ');
+            var meses = new List<string>() { "ENE", "FEB", "AMR", "ABR", "MAY", "JUN", "JUL", "AGO", "SEP", "OCT", "NOV", "DIC" };
+
+            var exist = meses.IndexOf(split[1]);
+            if (exist > -1)
+            {
+                split[1] = $"{exist + 1}";
+            }
+
+            return DateTime.Parse($"{split[0]}/{split[1]}/{split[2]}");
         }
 
         public SolidColorBrush getBrushFromHex(string hex)
@@ -130,17 +171,32 @@ namespace MoneySpendAdmin.Views
             return new SolidColorBrush(Color.FromArgb(A, R, G, B));
         }
 
+        public async Task updateState(int year, int month, string text, int multi = 1)
+        {
+            Items = GetDates(year, month, text, multi);
+            calendarGrid.ItemsSource = Items;
+            await prepareDates();
+        }
+
+        public bool isMonthSelected()
+        {
+            return calendarTypeSelector.SelectedItem.Text == "Mes";
+        }
         #region Calendar
         private void calendarGrid_ElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args)
         {
-            var selectionIndex = args.Index;
-            var item = ElementCompositionPreview.GetElementVisual(args.Element);
-
-        }
-
-        private void calendarGrid_ElementIndexChanged(ItemsRepeater sender, ItemsRepeaterElementIndexChangedEventArgs args)
-        {
-            var selectionIndex = args.NewIndex;
+            var target = args.Element as RelativePanel;
+            var clr = target.Background as SolidColorBrush;
+            var strHex = clr.Color.ToString();
+            var colorIdx = unhoverColors.FindIndex(c => c == strHex);
+            if (colorIdx > -1) 
+            {
+                var lblMoves = target.Children.FirstOrDefault(c => (c as TextBlock).Name == "lblMoves") as TextBlock;
+                if (lblMoves != null)
+                {
+                    lblMoves.Foreground = getBrushFromHex(hoverColors[colorIdx]);
+                }
+            }
         }
 
         private void calendarGrid_ElementClearing(ItemsRepeater sender, ItemsRepeaterElementClearingEventArgs args)
@@ -156,8 +212,15 @@ namespace MoneySpendAdmin.Views
             var colorIdx = unhoverColors.FindIndex(c => c == strHex);
 
             if (colorIdx > -1)
+            {
                 target.Background = getBrushFromHex(hoverColors[colorIdx]);
 
+                var lblMoves = target.Children.FirstOrDefault(c => (c as TextBlock).Name == "lblMoves") as TextBlock;
+                if (lblMoves != null)
+                {
+                    lblMoves.Foreground = getBrushFromHex(unhoverColors[colorIdx]);
+                }
+            }
             //CreateOrUpdateSpringAnimation(1.1f);
             //target.CenterPoint = new Vector3((float)((sender as Button).ActualWidth / 2.0), (float)((sender as Button).ActualHeight / 2.0), 1f);
             //((UIElement)sender).StartAnimation(springAnimation);
@@ -171,8 +234,15 @@ namespace MoneySpendAdmin.Views
             var colorIdx = hoverColors.FindIndex(c => c == strHex);
 
             if (colorIdx > -1)
+            {
                 target.Background = getBrushFromHex(unhoverColors[colorIdx]);
 
+                var lblMoves = target.Children.FirstOrDefault(c => (c as TextBlock).Name == "lblMoves") as TextBlock;
+                if (lblMoves != null)
+                {
+                    lblMoves.Foreground = getBrushFromHex(hoverColors[colorIdx]);
+                }
+            }
             //CreateOrUpdateSpringAnimation(1.0f);
             //target.CenterPoint = new Vector3((float)((sender as Button).ActualWidth / 2.0), (float)((sender as Button).ActualHeight / 2.0), 1f);
             //((UIElement)sender).StartAnimation(springAnimation);
@@ -208,13 +278,30 @@ namespace MoneySpendAdmin.Views
         }
         #endregion
 
-        private void calendarDP_SelectedDateChanged(DatePicker sender, DatePickerSelectedValueChangedEventArgs args)
+        private async void calendarDP_SelectedDateChanged(DatePicker sender, DatePickerSelectedValueChangedEventArgs args)
         {
-            if(calendarDP.SelectedDate != null)
+            var target = CmbWeek.SelectedItem as ComboBoxItem;
+            if (calendarDP.SelectedDate != null)
             {
-                Items = GetDates(args.NewDate.Value.Year, args.NewDate.Value.Month);
-                calendarGrid.ItemsSource = Items;
-                prepareDates();
+                await updateState(args.NewDate.Value.Year, args.NewDate.Value.Month, calendarTypeSelector.SelectedItem.Text,  isMonthSelected() ? 1 : int.Parse(target.Content.ToString()));
+            }
+        }
+
+        private async void calendarTypeSelector_SelectionChanged(SelectorBar sender, SelectorBarSelectionChangedEventArgs args)
+        {
+            SelectorBarItem selectedItem = sender.SelectedItem;
+            if (this.moveRepo != null)
+            {
+                await updateState(calendarDP.SelectedDate.Value.Year, calendarDP.SelectedDate.Value.Month, selectedItem.Text);
+            }
+        }
+
+        private async void CmbWeek_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var target = CmbWeek.SelectedItem as ComboBoxItem;
+            if (CmbWeek.SelectedItem != null && calendarDP != null && calendarTypeSelector.SelectedItem != null)
+            {
+                await updateState(calendarDP.SelectedDate.Value.Year, calendarDP.SelectedDate.Value.Month, calendarTypeSelector.SelectedItem.Text, int.Parse(target.Content.ToString()));
             }
         }
     }

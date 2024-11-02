@@ -10,74 +10,126 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Viewbox Name="gridContainer" 
+
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid 
+            Grid.Column="0"
+            Padding="30"
+            >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <SelectorBar 
+                Grid.Row="1" 
+                HorizontalAlignment="Center"
+                x:Name="calendarTypeSelector" 
+                SelectionChanged="calendarTypeSelector_SelectionChanged">
+                <SelectorBarItem x:Name="SelectorMonth" FontSize="25" Text="Mes" Icon="Calendar" IsSelected="True"/>
+                <SelectorBarItem x:Name="slectorWeek" FontSize="25" Text="Semana" Icon="Calendar" />
+            </SelectorBar>
+            <ComboBox 
+                    x:Name="CmbWeek" 
+                    SelectionChanged="CmbWeek_SelectionChanged" 
+                    HorizontalAlignment="Stretch"
+                    Grid.Row="2"
+                    Header="Semanas" 
+                    PlaceholderText="Selecciona cantidad de semanas"
+                    SelectedIndex="0"
+                    FontSize="20"
+                    >
+                <ComboBoxItem>1</ComboBoxItem>
+                <ComboBoxItem>2</ComboBoxItem>
+                <ComboBoxItem>3</ComboBoxItem>
+                <ComboBoxItem>4</ComboBoxItem>
+            </ComboBox>
+
+            <DatePicker 
+                Grid.Row="0"
+                x:Name="calendarDP"
+                HorizontalAlignment="Stretch"
+                Header="Mes - Año"
+                DayVisible="False"
+                YearVisible="True" 
+                FontSize="20"
+                SelectedDateChanged="calendarDP_SelectedDateChanged"/>
+
+        </Grid>
+        <Grid 
+            Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Viewbox 
+                Grid.Row="0"
+            Name="gridContainer"
              StretchDirection="Both" 
              Stretch="Uniform" 
              HorizontalAlignment="Center"
-             Margin="50">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="100"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-
-            <DatePicker 
-                x:Name="calendarDP" 
-                Grid.Row="0" 
-                DayVisible="False"
-                YearVisible="True" 
-                SelectedDateChanged="calendarDP_SelectedDateChanged"/>
-
-            <muxc:ItemsRepeater 
-                        Grid.Row="1"
+             VerticalAlignment="Top"
+             Margin="10">
+                <muxc:ItemsRepeater 
                         Name="calendarGrid" 
                        ItemsSource="{x:Bind Items}"
                        ElementPrepared="calendarGrid_ElementPrepared"
-                       ElementIndexChanged="calendarGrid_ElementIndexChanged"
                        ElementClearing="calendarGrid_ElementClearing">
-                <muxc:ItemsRepeater.ItemTemplate>
-                    <DataTemplate x:Name="calendarGridItemTemplate" x:DataType="local:CalendarItem">
+                    <muxc:ItemsRepeater.ItemTemplate>
+                        <DataTemplate x:Name="calendarGridItemTemplate" x:DataType="local:CalendarItem">
 
-                        <RelativePanel
-                            CornerRadius="10"
-                            Background="{x:Bind BgColor}"
-                            Padding="16"
-                            MaxHeight="280"
-                            MaxWidth="280"
-                            Tapped="RelativePanel_Tapped"
-                            GotFocus="RelativePanel_GotFocus"
-                            PointerEntered="RelativePanel_PointerEntered"
-                            PointerExited="RelativePanel_PointerExited"
-                            PointerPressed="RelativePanel_PointerPressed"
-                        
-                            >
-                            <InfoBadge 
-                                    Background="#C42B1C" 
-                                    RelativePanel.AlignRightWithPanel="True"
-                                    Margin="0,0,10,0"
-                                    Foreground="White"
+                            <RelativePanel
+                                CornerRadius="10"
+                                Background="{x:Bind BgColor}"
+                                Padding="16"
+                                Tapped="RelativePanel_Tapped"
+                                GotFocus="RelativePanel_GotFocus"
+                                PointerEntered="RelativePanel_PointerEntered"
+                                PointerExited="RelativePanel_PointerExited"
+                                PointerPressed="RelativePanel_PointerPressed"
+                                >
+                                <TextBlock 
+                                    x:Name="lblMoves"
+                                    FontSize="20"
                                     FontWeight="Bold"
-                                    Value="{x:Bind movements.Count}"/>
+                                    RelativePanel.AlignBottomWithPanel="True"
+                                    RelativePanel.AlignRightWithPanel="True">
+                                    <Run Text="Movimientos" />
+                                    <Run Text="{x:Bind movements.Count}"/>
+                                </TextBlock>
 
-                            <TextBlock FontSize="40" 
+                                <TextBlock FontSize="40" 
                                        RelativePanel.AlignTopWithPanel="True" 
                                        Text="{x:Bind Day}" />
-                            <TextBlock RelativePanel.AlignBottomWithPanel="True"  
-                                       Text="{x:Bind Date}" />
-                        </RelativePanel>
 
-                    </DataTemplate>
-                </muxc:ItemsRepeater.ItemTemplate>
-                <muxc:ItemsRepeater.Layout>
-                    <muxc:UniformGridLayout Orientation="Horizontal"
+                                <TextBlock RelativePanel.AlignTopWithPanel="True"
+                                       Margin="50,10,0,0"
+                                       FontStretch="Expanded"
+                                       FontSize="15"
+                                       TextWrapping="Wrap"
+                                       FontWeight="Bold"
+                                       Text="{x:Bind Date}" />
+                            </RelativePanel>
+
+                        </DataTemplate>
+                    </muxc:ItemsRepeater.ItemTemplate>
+                    <muxc:ItemsRepeater.Layout>
+                        <muxc:UniformGridLayout 
+                                    Orientation="Horizontal"
                                    MaximumRowsOrColumns="7"
                                    MinItemHeight="280"
                                    MinItemWidth="280"
                                    MinColumnSpacing="5"
                                    MinRowSpacing="5"/>
-                </muxc:ItemsRepeater.Layout>
-            </muxc:ItemsRepeater>
+                    </muxc:ItemsRepeater.Layout>
+                </muxc:ItemsRepeater>
+            </Viewbox>
         </Grid>
+    </Grid>
 
-    </Viewbox>
 </Page>

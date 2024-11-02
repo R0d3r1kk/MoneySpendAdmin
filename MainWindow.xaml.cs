@@ -17,6 +17,8 @@ using iTextSharp.text.pdf.parser;
 using System.Text;
 using System.Collections.Generic;
 using MoneySpendAdmin.DAL;
+using Microsoft.UI;
+using Windows.Graphics;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -33,8 +35,14 @@ namespace MoneySpendAdmin
         {
             this.InitializeComponent();
             this.da = da;
-            var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
-            appWindowPresenter.IsResizable = false;
+
+            IntPtr hwnd = WinRT.Interop.WindowNative.GetWindowHandle(this);
+            var windowId = Win32Interop.GetWindowIdFromWindow(hwnd);
+            AppWindow appWindow = AppWindow.GetFromWindowId(windowId);
+            appWindow.Resize(new SizeInt32(1920, 1080));
+
+            //var appWindowPresenter = appWindow.Presenter as OverlappedPresenter;
+            //appWindowPresenter.IsResizable = false;
 
             NavigationViewControl.SelectedItem = NavigationViewControl.MenuItems.OfType<NavigationViewItem>().First();
             ContentFrame.Navigate(
@@ -46,8 +54,7 @@ namespace MoneySpendAdmin
                        new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
                        );
 
-            SystemBackdrop = new MicaBackdrop()
-            { Kind = MicaKind.Base };
+            SystemBackdrop = new DesktopAcrylicBackdrop();
 
             ExtendsContentIntoTitleBar = true;
             SetTitleBar(AppTitleBar);
@@ -107,7 +114,13 @@ namespace MoneySpendAdmin
         {
             if (args.IsSettingsInvoked == true)
             {
-                ContentFrame.Navigate(typeof(Views.SettingsPage), null, args.RecommendedNavigationTransitionInfo);
+                ContentFrame.Navigate(
+                    typeof(Views.SettingsPage), 
+                    new Global()
+                    {
+                        dataAccess = da
+                    }, 
+                    args.RecommendedNavigationTransitionInfo);
             }
             else if (args.InvokedItemContainer != null && (args.InvokedItemContainer.Tag != null))
             {
@@ -169,7 +182,8 @@ namespace MoneySpendAdmin
                 await pdfModel.formatPageLines(file.Path, file.Name);
                 loader.IsIndeterminate = false;
                 loading(false);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 loading(false, true);
@@ -194,7 +208,7 @@ namespace MoneySpendAdmin
             return textList;
         }
 
-        private void loading(bool status, bool error = false)
+        public void loading(bool status, bool error = false)
         {
             loader.IsIndeterminate = status;
             if (loader.IsIndeterminate)

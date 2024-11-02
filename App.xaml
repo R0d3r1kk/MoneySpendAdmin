@@ -12,6 +12,8 @@
             </ResourceDictionary.MergedDictionaries>
             <!-- Other app resources here -->
             <SolidColorBrush x:Key="CalendarItemBackgroundPointerOver" Color="White"/>
+            <SolidColorBrush x:Key="PrimaryColor" Color="Chocolate"/>
+            <SolidColorBrush x:Key="SecondaryColor" Color="#3B1E54"/>
             <SolidColorBrush x:Key="CalendarItemBackgroundPointerExited" Color="{ThemeResource SystemBaseLowColor}"/>
             <SolidColorBrush x:Key="WindowCaptionBackground">Transparent</SolidColorBrush>
             <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled">Transparent</SolidColorBrush>

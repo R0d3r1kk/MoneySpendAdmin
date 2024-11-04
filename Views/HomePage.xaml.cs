@@ -36,9 +36,10 @@ namespace MoneySpendAdmin.Views
             var global = e.Parameter as Global;
             if (global != null)
             {
+                App.MAIN.Loading(true);
                 this.balRepo = new BalanceRepository(global.dataAccess);
                 this.balanceList = new ObservableCollection<Balance>(await this.balRepo.GetAllAsync());
-
+                App.MAIN.Loading(false);
             }
             base.OnNavigatedTo(e);
         }

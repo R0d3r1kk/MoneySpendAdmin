@@ -6,136 +6,77 @@
     xmlns:local="using:MoneySpendAdmin"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Activated="Window_Activated">
 
-    <Window.SystemBackdrop>
+    <Window.SystemBackdrop >
         <DesktopAcrylicBackdrop />
     </Window.SystemBackdrop>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid
-            Grid.Row="0"
-            x:Name="AppTitleBar"
-            Height="48"
-            Margin="48,0,0,0"
-            VerticalAlignment="Top"
-            Padding="0">
+        <Grid 
+            Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image
+            <Grid
                 Grid.Column="0"
-                x:Name="AppFontIcon"
-                Width="16"
-                Height="16"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Source="/Assets/Square44x44Logo.png" />
-            <TextBlock
-                Margin="12,0,0,0"
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                Style="{StaticResource CaptionTextBlockStyle}"
-                Text="{x:Bind GetAppTitleFromSystem()}"/>
-            <CommandBar 
-                Background="Transparent" 
-                 IsOpen="False" 
-                 DefaultLabelPosition="Bottom"
-                 HorizontalAlignment="Left"
-                Grid.Column="2">
-                <CommandBar.SecondaryCommands >
-                    <AppBarButton Icon="OpenFile" Label="Open..." Click="PickAFileButton_Click" ClickMode="Press">
-                        <AppBarButton.KeyboardAccelerators>
-                            <KeyboardAccelerator Modifiers="Control" Key="O" />
-                        </AppBarButton.KeyboardAccelerators>
-                    </AppBarButton>
-                </CommandBar.SecondaryCommands>
-                <CommandBar.Content>
-                    <TextBlock Text="{x:Bind GetTodayDate()}" Margin="20,14"/>
-                </CommandBar.Content>
-            </CommandBar>
+                x:Name="AppTitleBar"
+                Height="30"
+                Margin="0,0,0,0"
+                VerticalAlignment="Top"
+                Padding="16,0,0,0"
+                >       
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image
+                    Grid.Column="0"
+                    x:Name="AppFontIcon"
+                    Width="16"
+                    Height="16"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Source="/Assets/Square44x44Logo.png" />
+                <TextBlock
+                    Margin="12,0,0,0"
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource CaptionTextBlockStyle}"
+                    Text="{x:Bind GetAppTitleFromSystem()}"/>
+
+            </Grid>
         </Grid>
-
-
+        <Frame
+        x:Name="MainContentFrame"
+        Grid.Row="1" />
+        
         <InfoBar 
             x:Name="infoBar" 
-            Grid.Row="1"
+            Grid.Row="2"
             IsIconVisible="True"
             IsClosable="True">
         </InfoBar>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ProgressBar
+                x:Name="loader"
+                Grid.Column="0" 
+                VerticalAlignment="Bottom" 
+                Background="Transparent"
+                Margin="20,0,20,0" />   
+        </Grid>
         
-        <NavigationView
-            Grid.Row="2"
-            x:Name="NavigationViewControl"
-            IsTitleBarAutoPaddingEnabled="False"
-            AlwaysShowHeader="True"
-            Header="Default Header"
-            IsTabStop="False"
-            PaneDisplayMode="Auto"
-            IsBackButtonVisible="Collapsed"
-            BackRequested="NavigationViewControl_BackRequested" 
-            ItemInvoked="NavigationViewControl_ItemInvoked"
-            IsSettingsVisible="False"
-            >
-            <NavigationView.HeaderTemplate>
-                <DataTemplate >
-                    <Grid Margin="0,-30,30,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid x:Name="pageTitle"
-                            Background="Transparent"
-                            Height="44"
-                            VerticalAlignment="Top">
-                            <TextBlock x:Name="title" 
-                                Style="{StaticResource TitleTextBlockStyle}"
-                                FontSize="24"
-                                VerticalAlignment="Center"
-                                Text="{Binding}"/>
-                        </Grid>
-                    </Grid>
-                </DataTemplate>
-            </NavigationView.HeaderTemplate>
-            <NavigationView.MenuItems>
-                <NavigationViewItem Icon="Home" Content="Home" Tag="MoneySpendAdmin.Views.HomePage" />
-                <NavigationViewItem Icon="Calendar" Content="Calendar" Tag="MoneySpendAdmin.Views.CalendarPage" />
-            </NavigationView.MenuItems>
-            <NavigationView.FooterMenuItems>
-                <NavigationViewItem Icon="Setting" Content="Settings" Tag="MoneySpendAdmin.Views.SettingsPage" />
-            </NavigationView.FooterMenuItems>
-            <NavigationView.Content >
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Frame 
-                        Grid.Row="0"
-                        x:Name="ContentFrame" 
-                       Navigated="ContentFrame_Navigated"  
-                       Padding="10,0,30,10" 
-                       CornerRadius="10">
-                        <Frame.ContentTransitions>
-                            <TransitionCollection>
-                                <NavigationThemeTransition/>
-                            </TransitionCollection>
-                        </Frame.ContentTransitions>
-                    </Frame>
-                    <ProgressBar
-                        x:Name="loader"
-                        Grid.Row="1" 
-                        VerticalAlignment="Bottom" 
-                        Background="Transparent"
-                        Margin="20,0,20,0" />
-                </Grid>
-            </NavigationView.Content>
-        </NavigationView>
+        
     </Grid>
 </Window>

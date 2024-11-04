@@ -92,10 +92,10 @@ namespace MoneySpendAdmin.Views
             var global = e.Parameter as Global;
             if (global != null)
             {
-                App.MAIN.loading(true);
+                App.MAIN.Loading(true);
                 this.moveRepo = new MovementRepository(global.dataAccess);
                 await prepareDates();
-                App.MAIN.loading(false);
+                App.MAIN.Loading(false);
                 App.MAIN.NotifyUser($"{moves.Count} Transacciones", InfoBarSeverity.Informational);
             }
             init();
@@ -124,7 +124,12 @@ namespace MoneySpendAdmin.Views
                     CmbWeek.Visibility = Visibility.Collapsed;
                     break;
                 case "Semana":
+                    var mDays = DateTime.DaysInMonth(year, month);
                     days = 7 * multi;
+                    if (multi == 4)
+                    {
+                        days += mDays - days;
+                    }
                     CmbWeek.Visibility = Visibility.Visible;
                     break;
             }

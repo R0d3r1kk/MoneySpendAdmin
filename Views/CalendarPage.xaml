@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    >
 
 
     <Grid >
@@ -66,9 +66,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-
-            <Viewbox 
-                Grid.Row="0"
+            <ScrollViewer Grid.Row="0">
+                <Viewbox 
             Name="gridContainer"
              StretchDirection="Both" 
              Stretch="Uniform" 
@@ -129,6 +128,7 @@
                     </muxc:ItemsRepeater.Layout>
                 </muxc:ItemsRepeater>
             </Viewbox>
+            </ScrollViewer>
         </Grid>
     </Grid>
 

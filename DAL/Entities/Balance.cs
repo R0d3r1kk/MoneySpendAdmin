@@ -7,7 +7,7 @@ namespace MoneySpendAdmin.DAL.Entities
     public class Balance
     {
         [PrimaryKey, Unique]
-        public string id { get; set; }
+        private string id { get; set; }
         public string mes { get; set; }
         public decimal saldo_anterior { get; set; }
         public decimal depositos { get; set; }
@@ -15,6 +15,27 @@ namespace MoneySpendAdmin.DAL.Entities
         public decimal otros_cargos { get; set; }
         public decimal saldo_corte { get; set; }
         public decimal saldo_promedio { get; set; }
-        public DateTime fecha_creacion { get; set; }
+        private DateTime fecha_creacion { get; set; }
+
+
+        public string getId()
+        {
+            return id;
+        }
+
+        public void setId(string Id)
+        {
+            this.id = Id;
+        }
+
+        public DateTime getDate()
+        {
+            return fecha_creacion;
+        }
+
+        public void setDate(DateTime d)
+        {
+            this.fecha_creacion = d;
+        }
     }
 }

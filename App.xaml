@@ -10,10 +10,22 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
                 <!-- Other merged dictionaries here -->
             </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="LottiePlayer"
+               TargetType="Border">
+                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlHighlightAltListAccentMediumBrush}" />
+                <Setter Property="BorderThickness" Value="10" />
+                <Setter Property="Width" Value="400" />
+                <Setter Property="Height" Value="400" />
+            </Style>
+
             <!-- Other app resources here -->
             <SolidColorBrush x:Key="CalendarItemBackgroundPointerOver" Color="White"/>
-            <SolidColorBrush x:Key="PrimaryColor" Color="Chocolate"/>
-            <SolidColorBrush x:Key="SecondaryColor" Color="#3B1E54"/>
+            <SolidColorBrush x:Key="AccentColor" Color="#6b94b2"/>
+            <SolidColorBrush x:Key="WindowColor" Color="#07142a"/>
+            <SolidColorBrush x:Key="PrimaryElementColor" Color="#092142"/>
+            <SolidColorBrush x:Key="SecondaryElementColor" Color="#10538a"/>
             <SolidColorBrush x:Key="CalendarItemBackgroundPointerExited" Color="{ThemeResource SystemBaseLowColor}"/>
             <SolidColorBrush x:Key="WindowCaptionBackground">Transparent</SolidColorBrush>
             <SolidColorBrush x:Key="WindowCaptionBackgroundDisabled">Transparent</SolidColorBrush>

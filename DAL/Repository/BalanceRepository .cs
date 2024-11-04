@@ -28,17 +28,17 @@ namespace MoneySpendAdmin.DAL.Repository
 
         public async Task SaveAsync(Balance balance)
         {
-            var ba = await _db.Table<Balance>().FirstOrDefaultAsync(b => b.id == balance.id || b.mes == balance.mes);
+            var ba = await _db.Table<Balance>().FirstOrDefaultAsync(b => b.getId() == balance.getId() || b.mes == balance.mes);
             if (ba == null)
             {
-                balance.id = Guid.NewGuid().ToString();
-                balance.fecha_creacion = DateTime.Now;
+                balance.setId(Guid.NewGuid().ToString());
+                balance.setDate(DateTime.Now);
                 await _db.InsertAsync(balance);
             }
             else
             {
-                balance.id = ba.id;
-                balance.fecha_creacion = DateTime.Now;
+                balance.setId(ba.getId());
+                balance.setDate(DateTime.Now);
                 await _db.UpdateAsync(balance);
             }
         }
